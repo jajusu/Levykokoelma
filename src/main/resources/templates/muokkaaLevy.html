@@ -1,0 +1,77 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Muokkaa levyä</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<style>
+body{
+	width:100%;
+	max-width:500px
+}
+
+input[type=text], select {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+input[type=submit] {
+  width: 100%;
+  background-color: #4CAF50;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+input[type=submit]:hover {
+  background-color: #45a049;
+}
+
+div {
+  border-radius: 5px;
+  background-color: #f2f2f2;
+  padding: 20px;
+}
+
+.error{
+  color: red;
+}
+</style>
+<body>
+	<h1>Muokkaa</h1>
+	<form th:object="${levy}" th:action="@{../tallennaMuokkaus}" action="#" method="post">
+		<input type="hidden" th:field="*{levy_id}" class="form-control"/>
+		<label for="nimi">Nimi: </label><input type="text" th:field="*{nimi}" />
+		<div class="error" th:if="${#fields.hasErrors('nimi')}" th:errors="*{nimi}">Error</div>
+		
+		<label for="artisti">Artisti: </label>
+				<select id="artistiLista" th:field="*{artisti}" class="form-control">
+				 <option th:each="artisti: ${artisti}" th:value="${artisti.artisti_id}" th:text="${artisti.nimi}"></option>
+				</select>
+		
+		<label for="info">Info: </label><input type="text" th:field="*{info}" />
+		<div class="error" th:if="${#fields.hasErrors('info')}" th:errors="*{info}">Error</div>
+		
+		<label for="kesto">Kesto: </label><input type="text" th:field="*{kesto}" />
+		
+		<label for="vuosi">Vuosi: </label><input type="text" th:field="*{vuosi}" />
+		<div class="error" th:if="${#fields.hasErrors('vuosi')}" th:errors="*{vuosi}">Error</div>
+		
+		
+		<label for="formaatti">Formaatti: </label>
+				<select id="formaattiLista" th:field="*{formaatti}" class="form-control">
+				 <option th:each="formaatti: ${formaatti}" th:value="${formaatti.formaatti_id}" th:text="${formaatti.nimi}"></option>
+				</select>
+				
+		<input type="submit" class="btn btn-success" value="Tallenna"></input>
+	</form>
+</body>
+</html>
