@@ -6,6 +6,7 @@ import java.util.Optional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -35,8 +36,14 @@ public class LevyController {
 	@Autowired
 	FormaattiRepository frepository;
 	
+	//Oma login
+	@RequestMapping(value="/login")
+	public String login() {
+		return "login";
+	}
+	
 	// REST levyille
-    //JAva-kielinen Student-luokan oliolista muunnetaan JSON-opiskelijalistaksi ja 
+    //JAva-kielinen Levy-luokan oliolista muunnetaan JSON-levylistaksi ja 
     //lähetetään web-selaimelle vastauksena
     @RequestMapping(value="/levyt", method = RequestMethod.GET)
     public @ResponseBody List<Levy> levyListaRest() {	
@@ -105,28 +112,28 @@ public class LevyController {
     }
 
     
-    // Tallenna uusi levy validoinnilla
-    @RequestMapping(value = "/tallenna", method = RequestMethod.POST)
-    public String tallenna(@Valid Levy levy, BindingResult bindingResult,Model model){
-    	if (bindingResult.hasErrors()) { // validation errors 
-        	model.addAttribute("artisti", arepository.findAll());
-        	model.addAttribute("formaatti", frepository.findAll());
-			return "lisaaLevy";  // return back to form
-		} else { // no validation errors
-			lrepository.save(levy);
-	        return "redirect:listaa";
-		}
-        
-    }    
+//    // Tallenna uusi levy validoinnilla
+//    @RequestMapping(value = "/tallenna", method = RequestMethod.POST)
+//    public String tallenna(@Valid Levy levy, BindingResult bindingResult,Model model){
+//    	if (bindingResult.hasErrors()) { // validation errors 
+//        	model.addAttribute("artisti", arepository.findAll());
+//        	model.addAttribute("formaatti", frepository.findAll());
+//			return "lisaaLevy";  // return back to form
+//		} else { // no validation errors
+//			lrepository.save(levy);
+//	        return "redirect:listaa";
+//		}
+//        
+//    }    
     
-    // Tallenna uusi levy validoinnilla OTA KÄYTTÖÖN!!!
+    // Tallenna uusi tai muokattu levy validoinnilla. Käytössä.
     @RequestMapping(value = "/tallennaKaikki", method = RequestMethod.POST)
     public String tallennaKaikki(@Valid Levy levy, BindingResult bindingResult, Model model){
     	if (bindingResult.hasErrors()) { // validation errors 
          	model.addAttribute("artisti", arepository.findAll());
         	model.addAttribute("formaatti", frepository.findAll());
     		if (levy.getLevy_id()==0) {
-    			return "lisaaLevy";  // return back to form
+    			return "lisaaLevy";  // lisaaLevy.html
     		}else { 
     	        return "muokkaaLevy"; //muokkaaLevy.html
     		}
@@ -137,37 +144,39 @@ public class LevyController {
         
     }  
     
-    // Tallenna levy vanha
-    @RequestMapping(value = "/save", method = RequestMethod.POST)
-    public String save(Levy levy){
-        lrepository.save(levy);
-        return "redirect:listaa";
-    }    
+//    // Tallenna levy vanha
+//    @RequestMapping(value = "/save", method = RequestMethod.POST)
+//    public String save(Levy levy){
+//        lrepository.save(levy);
+//        return "redirect:listaa";
+//    }    
 
     // Poista levy
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String deleteLevy(@PathVariable("id") Long levy_id) {
     	lrepository.deleteById(levy_id);
         return "redirect:../listaa";
     }  
     
-    // Tallenna muokattu levy validoinnilla
-    @RequestMapping(value = "/tallennaMuokkaus", method = RequestMethod.POST)
-    public String tallennaMuokkaus(@Valid Levy levy, BindingResult bindingResult,Model model){
-    	if (bindingResult.hasErrors()) { // validation errors 
-        	model.addAttribute("artisti", arepository.findAll());
-        	model.addAttribute("formaatti", frepository.findAll());
-			return "muokkaaLevy";  // return back to form
-		} else { // no validation errors
-			lrepository.save(levy);
-	        return "redirect:listaa";
-		}
-        
-    }    
+//    // Tallenna muokattu levy validoinnilla
+//    @RequestMapping(value = "/tallennaMuokkaus", method = RequestMethod.POST)
+//    public String tallennaMuokkaus(@Valid Levy levy, BindingResult bindingResult,Model model){
+//    	if (bindingResult.hasErrors()) { // validation errors 
+//        	model.addAttribute("artisti", arepository.findAll());
+//        	model.addAttribute("formaatti", frepository.findAll());
+//			return "muokkaaLevy";  // return back to form
+//		} else { // no validation errors
+//			lrepository.save(levy);
+//	        return "redirect:listaa";
+//		}
+//        
+//    }    
     
     
-    // Muokkaa levyä vanha jonka kautta tullaan
+    // Muokkaa levy
     @RequestMapping(value = "/update/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String muokkaa(@PathVariable(value="id") Long levy_id, Model model){
     	model.addAttribute("artisti", arepository.findAll());
     	model.addAttribute("formaatti", frepository.findAll());

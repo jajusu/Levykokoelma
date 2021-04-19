@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
 <title>Listaa</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -7,21 +7,55 @@
 
 <style>
 form{
-  padding-top: 9px;
+	padding-top: 9px;
 }
+.ylapalkki{
+  	display: flex;
+	margin:auto;
+}
+
+.tyhja{
+	flex:30%;
+}
+
+.listaa{
+	flex:40%
+}
+
+.kirjaudu{
+	flex:30%
+	text-align: right;
+	padding-right:5px;
+	padding-top: 9px
+}
+
+
 </style>
 </head>
 
 <body>
-<div style="margin:auto;max-width:400px">
-<h1  >Listaa levyt</h1>
-		 <a class="btn-success btn-sm" href="/lisaaLevy">Lisää levy</a> 
-		 <a class="btn-success btn-sm" href="/lisaaArtisti">Lisää artisti</a> 
-		 <a class="btn-success btn-sm" href="/lisaaFormaatti">Lisää formaatti</a> 
-<form class="haku" action="/haku" >
-  <input type="text" placeholder="Hae.." name="haku">
-  <button type="submit" class="btn btn-primary">Etsi</button>
-</form><br>
+
+
+<div class="ylapalkki">
+
+	<div class="tyhja"></div>
+	<div class="listaa">
+		<h1  >Listaa levyt</h1>
+			 <a class="btn-success btn-sm" href="/lisaaLevy">Lisää levy</a> 
+			 <a class="btn-success btn-sm" href="/lisaaArtisti">Lisää artisti</a> 
+			 <a class="btn-success btn-sm" href="/lisaaFormaatti">Lisää formaatti</a> 
+		<form class="haku" action="/haku" >
+		  <input type="text" placeholder="Hae.." name="haku">
+		  <button type="submit" class="btn btn-primary">Etsi</button>
+		</form><br>
+	</div>
+		
+	<div class="kirjaudu">
+				<span th:inline="text">Nimi: [[${#httpServletRequest.remoteUser}]]</span>
+				<form th:action="@{/logout}" method="post">
+					<input type="submit" value="Kirjaudu ulos" class="btn-sm btn-danger"/>
+				</form>
+	</div>
 </div><br>
 
 <table table class="table table-hover">
@@ -35,8 +69,8 @@ form{
 		    <th>Formaatti</th>
 		    <th>Info</th>
 		    <th>ID</th>
-		    <th></th>
-		    <th></th>
+		    <th sec:authorize="hasAuthority('ADMIN')"> </th>
+		    <th sec:authorize="hasAuthority('ADMIN')"> </th>
 		</tr>
 		<tr th:each ="levyt:${levyt}">
 			<td th:text="${levyt.nimi}"></td>
@@ -46,8 +80,8 @@ form{
 			<td th:text="${levyt.formaatti.nimi}"></td>
 			<td th:text="${levyt.info}"></td>
 			<td th:text="${levyt.levy_id}"></td>
- 			<td><a  class="btn btn-danger"  th:href="@{/delete/{id}(id=${levyt.levy_id})}">Poista</a></td>
- 			<td><a class="btn btn-info" th:href="@{/update/{id}(id=${levyt.levy_id})}">Muokkaa</a></td> 
+ 			<td sec:authorize="hasAuthority('ADMIN')"><a  class="btn btn-danger"  th:href="@{/delete/{id}(id=${levyt.levy_id})}">Poista</a></td>
+ 			<td sec:authorize="hasAuthority('ADMIN')"><a class="btn btn-info" th:href="@{/update/{id}(id=${levyt.levy_id})}">Muokkaa</a></td> 
 		</tr>
 	</tbody>	
 </table>

@@ -37,7 +37,6 @@ input[type=submit]:hover {
 
 div {
   border-radius: 5px;
-  background-color: #f2f2f2;
   padding: 20px;
 }
 
@@ -48,7 +47,7 @@ div {
 <body>
 	<h1>Lisää levy</h1>
 	<div>
-		<form th:object="${levy}" th:action="@{tallenna}" action="#" method="post">
+		<form th:object="${levy}" th:action="@{tallennaKaikki}" action="#" method="post">
 		  	<label for="nimi">Nimi</label>
 			<input type="text" id="nimi" th:field="*{nimi}" />
 			<div class="error" th:if="${#fields.hasErrors('nimi')}" th:errors="*{nimi}">Error</div>
