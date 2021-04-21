@@ -85,7 +85,7 @@ public class LevyController {
         return "listaa";
     }
     
-	// Show all students
+	// Näytä kaikki levyt
     @RequestMapping(value="/haku",  method = RequestMethod.GET)
     public String hakuLista(Model model, String haku) {	
     	if (haku=="") {

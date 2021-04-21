@@ -8,6 +8,7 @@ import org.springframework.data.repository.CrudRepository;
 public interface LevyRepository extends CrudRepository<Levy, Long>{
 
     List<Levy> findByNimiContainingIgnoreCase(String nimi);
+    List<Levy> findByNimi(String nimi);
     List<Levy> findByVuosi(int vuosi);
     List<Levy> findByArtisti(String artisti);
 
